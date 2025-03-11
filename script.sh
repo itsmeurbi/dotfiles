@@ -109,6 +109,12 @@ then
   brew install --cask visual-studio-code
 fi
 
+if [ ! -d "/Applications/Cursor.app" ]
+then
+  echo "Installing Cursor..."
+  brew install --cask cursor
+fi
+
 echo "Coping VSCode config file..."
 cp config_files/vs_code_settings.json ~/Library/Application Support/Code/User/settings.json
 
