@@ -11,7 +11,10 @@ echo "Installing Brew..."
 if ! command -v brew &> /dev/null
 then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  source ~/.bash_profile
+  echo >> /Users/urbi/.zprofile
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/urbi/.zprofile
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  command bash
 fi
 
 echo "Installing Oh-My-zsh..."
@@ -65,14 +68,6 @@ then
   brew tap heroku/brew && brew install heroku
 fi
 
-echo "Installing fish..."
-if ! command -v fish &> /dev/null
-then
-  brew install fish
-  echo "Copying fish config..."
-  cp config_files/config.fish ~/.config/fish/config.fish
-fi
-
 echo "Installing gpg..."
 if ! command -v gpg &> /dev/null
 then
@@ -124,11 +119,6 @@ then
   brew install --cask docker
 fi
 
-if [ ! -d "/Applications/Spotify.app" ]
-then
-  echo "Installing Spotify..."
-  brew install --cask spotify
-fi
 
 if [ ! -d "/Applications/Slack.app" ]
 then
