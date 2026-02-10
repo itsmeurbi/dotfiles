@@ -11,14 +11,17 @@ echo "Installing Brew..."
 if ! command -v brew &> /dev/null
 then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  echo >> /Users/urbi/.zprofile
-  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/urbi/.zprofile
+  echo >> "$HOME/.zprofile"
+  echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME/.zprofile"
   eval "$(/opt/homebrew/bin/brew shellenv)"
-  command bash
 fi
 
 echo "Installing Oh-My-zsh..."
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+else
+  echo "Oh-My-zsh already installed."
+fi
 
 echo "Updating all dependencies..."
 brew upgrade
@@ -36,10 +39,11 @@ echo "Installing nvm..."
 if ! command -v nvm &> /dev/null
 then
   brew install nvm
-  mkdir ~/.nvm
-  echo 'export NVM_DIR="$HOME/.nvm"
-  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >>  ~/.zshrc
+  mkdir -p "$HOME/.nvm"
+  NVM_PREFIX=$(brew --prefix nvm)
+  echo "export NVM_DIR=\"\$HOME/.nvm\"
+[ -s \"$NVM_PREFIX/nvm.sh\" ] && \. \"$NVM_PREFIX/nvm.sh\"  # This loads nvm
+[ -s \"$NVM_PREFIX/etc/bash_completion.d/nvm\" ] && \. \"$NVM_PREFIX/etc/bash_completion.d/nvm\"  # This loads nvm bash_completion" >> "$HOME/.zshrc"
 fi
 
 echo "Installing node..."
@@ -55,11 +59,11 @@ then
 fi
 
 echo "Installing redis..."
-if ! command -v nvm &> /dev/null
+if ! command -v redis-server &> /dev/null
 then
   brew install redis
-  echo "Seting redis auto-start"
-  ln -sfv /usr/local/opt/redis/*.plist ~/Library/LaunchAgents
+  echo "Setting redis auto-start"
+  ln -sfv "$(brew --prefix redis)"/*.plist "$HOME/Library/LaunchAgents"
 fi
 
 echo "Installing heroku cli..."
@@ -110,8 +114,9 @@ then
   brew install --cask cursor
 fi
 
-echo "Coping VSCode config file..."
-cp config_files/vs_code_settings.json ~/Library/Application Support/Code/User/settings.json
+echo "Copying VSCode config file..."
+mkdir -p "$HOME/Library/Application Support/Code/User"
+cp config_files/vs_code_settings.json "$HOME/Library/Application Support/Code/User/settings.json"
 
 if [ ! -d "/Applications/Docker.app" ]
 then
@@ -125,5 +130,3 @@ then
   echo "Installing Slack..."
   brew install --cask slack
 fi
-
-exit
