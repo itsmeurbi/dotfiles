@@ -23,6 +23,15 @@ else
   echo "Oh-My-zsh already installed."
 fi
 
+echo "Installing zsh aliases..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cp "$SCRIPT_DIR/config_files/zsh_aliases" "$HOME/.zsh_aliases"
+if ! grep -q '\.zsh_aliases' "$HOME/.zshrc" 2>/dev/null; then
+  echo '' >> "$HOME/.zshrc"
+  echo '# Load custom aliases' >> "$HOME/.zshrc"
+  echo '[ -f "$HOME/.zsh_aliases" ] && source "$HOME/.zsh_aliases"' >> "$HOME/.zshrc"
+fi
+
 echo "Updating all dependencies..."
 brew upgrade
 

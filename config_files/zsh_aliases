@@ -1,0 +1,11 @@
+alias be='bundle exec'
+alias gch='git checkout'
+alias gi="git init"
+alias gs="git stash"
+alias gpm='git pull origin main'
+alias gp='git push origin head'
+alias gpd='git pull origin development'
+alias gfo="git fetch origin"
+alias gph="git push origin head"
+alias gcp="git cherry-pick"
+alias gbd="git branch -D"
