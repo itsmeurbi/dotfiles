@@ -44,27 +44,31 @@ then
   brew install rbenv
 fi
 
-echo "Installing nvm..."
-if ! command -v nvm &> /dev/null
+echo "Installing nodenv..."
+if ! command -v nodenv &> /dev/null
 then
-  brew install nvm
-  mkdir -p "$HOME/.nvm"
-  NVM_PREFIX=$(brew --prefix nvm)
-  echo "export NVM_DIR=\"\$HOME/.nvm\"
-[ -s \"$NVM_PREFIX/nvm.sh\" ] && \. \"$NVM_PREFIX/nvm.sh\"  # This loads nvm
-[ -s \"$NVM_PREFIX/etc/bash_completion.d/nvm\" ] && \. \"$NVM_PREFIX/etc/bash_completion.d/nvm\"  # This loads nvm bash_completion" >> "$HOME/.zshrc"
+  brew install nodenv node-build
+  nodenv init
+  eval "$(nodenv init -)"
 fi
 
 echo "Installing node..."
 if ! command -v node &> /dev/null
 then
-  brew install node
+  eval "$(nodenv init -)" 2>/dev/null || true
+  if command -v nodenv &> /dev/null; then
+    nodenv install 20
+    nodenv global 20
+  else
+    brew install node
+  fi
 fi
 
-echo "Installing yarn..."
-if ! command -v yarn &> /dev/null
+echo "Enabling Corepack and preparing Yarn..."
+if command -v node &> /dev/null
 then
-  npm install --global yarn
+  corepack enable
+  corepack prepare yarn@stable --activate
 fi
 
 echo "Installing redis..."
